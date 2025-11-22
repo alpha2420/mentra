@@ -114,6 +114,7 @@ export default function MessagePage({ params }: { params: { id: string } }) {
         // Save to DB
         await fetch('/api/messages', {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 content: input,
                 role: 'user',
@@ -141,6 +142,7 @@ export default function MessagePage({ params }: { params: { id: string } }) {
             // Save AI response to DB
             await fetch('/api/messages', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     content: aiContent,
                     role: 'assistant',
@@ -162,6 +164,7 @@ export default function MessagePage({ params }: { params: { id: string } }) {
             // Save meeting to DB
             await fetch('/api/meetings', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     date,
                     time,
@@ -182,6 +185,7 @@ export default function MessagePage({ params }: { params: { id: string } }) {
             // Save system message
             await fetch('/api/messages', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     content: sysMsg,
                     role: 'system',
@@ -193,10 +197,10 @@ export default function MessagePage({ params }: { params: { id: string } }) {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 h-[calc(100vh-64px)]">
-            <div className="grid lg:grid-cols-[1fr_350px] gap-6 h-full">
+        <div className="container mx-auto px-4 py-8 min-h-[calc(100vh-80px)] pb-20">
+            <div className="grid lg:grid-cols-[1fr_350px] gap-6 min-h-full">
                 {/* Chat Area */}
-                <Card className="flex flex-col h-full overflow-hidden border-primary/10 shadow-lg">
+                <Card className="flex flex-col min-h-[600px] max-h-[calc(100vh-200px)] overflow-hidden border-primary/10 shadow-lg">
                     <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full overflow-hidden bg-muted">
@@ -252,7 +256,7 @@ export default function MessagePage({ params }: { params: { id: string } }) {
 
                 {/* Scheduling Sidebar */}
                 <div className="space-y-6">
-                    <Card className="p-6 border-primary/10 shadow-lg h-full overflow-y-auto">
+                    <Card className="p-6 border-primary/10 shadow-lg max-h-[calc(100vh-200px)] overflow-y-auto">
                         <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                             <CalendarIcon className="w-5 h-5" />
                             Schedule Meeting

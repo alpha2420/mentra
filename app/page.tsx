@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MentorCard } from "@/components/shared/MentorCard";
+import { Counter } from "@/components/shared/Counter";
 import { ArrowRight, CheckCircle2, Sparkles, Users, BrainCircuit, Star, Quote, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Carousel,
   CarouselContent,
@@ -86,58 +87,145 @@ export default function Home() {
         {/* Animated Background */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.2, 0.4, 0.2],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+            className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
+          />
         </div>
 
         <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium bg-secondary/50 backdrop-blur-sm mb-8">
-              <Sparkles className="mr-2 h-4 w-4 text-primary" />
-              <span>AI-Powered Wisdom Matching</span>
-            </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 leading-tight">
-              Real Mentors. <br />
-              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-                Real Wisdom.
-              </span>
+            <motion.h1
+              className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 leading-tight"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                    delayChildren: 0.2
+                  }
+                }
+              }}
+            >
+              {Array.from("Real Mentors.").map((char, index) => (
+                <motion.span key={index} variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
+                  {char}
+                </motion.span>
+              ))}
               <br />
-              Real Growth.
-            </h1>
+              <motion.span
+                className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent inline-block"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              >
+                {Array.from("Real Wisdom.").map((char, index) => (
+                  <motion.span key={index} variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
+                    {char}
+                  </motion.span>
+                ))}
+              </motion.span>
+              <br />
+              {Array.from("Real Growth.").map((char, index) => (
+                <motion.span key={index} variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
+                  {char}
+                </motion.span>
+              ))}
+            </motion.h1>
 
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
+            <motion.p
+              className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1.5 }}
+            >
               Get guidance from people who've lived life — retired leaders, founders, and seasoned professionals.
               <span className="font-semibold text-foreground"> Not academic tutoring</span>, but real-world direction.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-              <Button size="lg" className="h-14 px-10 text-lg rounded-full shadow-lg hover:shadow-xl transition-all" asChild>
+            <motion.div
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.8 }}
+            >
+              <Button size="lg" className="h-14 px-10 text-lg rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105" asChild>
                 <Link href="/mentors">Find Your Mentor <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-10 text-lg rounded-full" asChild>
+              <Button size="lg" variant="outline" className="h-14 px-10 text-lg rounded-full hover:scale-105 transition-all" asChild>
                 <Link href="/about">How It Works</Link>
               </Button>
-            </div>
+            </motion.div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
-              <div>
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">500+</div>
-                <div className="text-sm text-muted-foreground">Expert Mentors</div>
-              </div>
-              <div>
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">10k+</div>
-                <div className="text-sm text-muted-foreground">Sessions Booked</div>
-              </div>
-              <div>
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">4.9★</div>
-                <div className="text-sm text-muted-foreground">Average Rating</div>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <div className="text-3xl md:text-5xl font-bold text-primary mb-2 flex justify-center">
+                  <Counter value={500} suffix="+" />
+                </div>
+                <div className="text-sm md:text-base text-muted-foreground font-medium">Expert Mentors</div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <div className="text-3xl md:text-5xl font-bold text-primary mb-2 flex justify-center">
+                  <Counter value={10000} suffix="+" />
+                </div>
+                <div className="text-sm md:text-base text-muted-foreground font-medium">Sessions Booked</div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <div className="text-3xl md:text-5xl font-bold text-primary mb-2 flex justify-center">
+                  <Counter value={5} suffix="★" />
+                </div>
+                <div className="text-sm md:text-base text-muted-foreground font-medium">Average Rating</div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -146,12 +234,18 @@ export default function Home() {
       {/* Enhanced Features Section */}
       <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Mentra?</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Experience meets technology to give you the guidance you actually need.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <motion.div
@@ -202,7 +296,13 @@ export default function Home() {
       {/* Meet Mentors Slider */}
       <section className="py-24">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-end mb-12">
+          <motion.div
+            className="flex justify-between items-end mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <div>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Meet Our Mentors</h2>
               <p className="text-muted-foreground text-lg">Seasoned professionals ready to guide you.</p>
@@ -212,7 +312,7 @@ export default function Home() {
                 View All <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-          </div>
+          </motion.div>
 
           <Carousel
             opts={{
@@ -243,10 +343,16 @@ export default function Home() {
       {/* Testimonials */}
       <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Members Say</h2>
             <p className="text-muted-foreground text-lg">Real stories from real people.</p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {TESTIMONIALS.map((testimonial, i) => (
@@ -276,7 +382,15 @@ export default function Home() {
       {/* How It Works */}
       <section className="py-24">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-center mb-16">How Mentra Works</h2>
+          <motion.h2
+            className="text-3xl md:text-4xl font-bold tracking-tight text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            How Mentra Works
+          </motion.h2>
           <div className="grid md:grid-cols-4 gap-8 relative max-w-6xl mx-auto">
             {/* Connecting Line (Desktop) */}
             <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-primary/20 via-primary to-primary/20 -z-10"></div>
@@ -308,7 +422,13 @@ export default function Home() {
       {/* Enhanced CTA Section */}
       <section className="py-24">
         <div className="container mx-auto px-4">
-          <div className="rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
+          <motion.div
+            className="rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground p-12 md:p-20 text-center relative overflow-hidden shadow-2xl"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
             <div className="absolute top-0 left-0 w-full h-full opacity-10">
               <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-2xl"></div>
               <div className="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
@@ -327,7 +447,7 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
