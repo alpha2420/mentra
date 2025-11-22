@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSocket } from "@/components/providers/SocketProvider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,67 +20,81 @@ export function AIChatWidget() {
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
+    const { socket, isConnected } = useSocket();
 
-    // Poll for messages
+    // Join room on connect
     useEffect(() => {
-        if (!isOpen) return;
+        if (socket && isConnected) {
+            socket.emit("join-room", "general"); // Using a static room for now
+        }
+    }, [socket, isConnected]);
 
-        const fetchMessages = async () => {
-            try {
-                const res = await fetch('/api/messages');
-                if (res.ok) {
-                    const data = await res.json();
-                    setMessages(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch messages", error);
-            }
+    // Listen for messages
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on("receive-message", (data: any) => {
+            // Avoid duplicating own messages if backend broadcasts to sender too
+            // For this simple implementation, we'll assume backend broadcasts to everyone
+            // and we filter or just append. 
+            // Better approach: Optimistically add own message, ignore own ID from server.
+
+            // Simple append for now (might duplicate if we also add optimistically)
+            // Let's rely on server broadcast for simplicity in this demo, 
+            // OR add optimistically and filter duplicates by ID.
+
+            setMessages(prev => {
+                const exists = prev.some(m => m.id === data.id);
+                if (exists) return prev;
+                return [...prev, { id: data.id || Date.now().toString(), role: data.role, content: data.message }];
+            });
+            setIsLoading(false);
+        });
+
+        return () => {
+            socket.off("receive-message");
         };
-
-        fetchMessages();
-        const interval = setInterval(fetchMessages, 3000);
-        return () => clearInterval(interval);
-    }, [isOpen]);
+    }, [socket]);
 
     // Auto-scroll to bottom
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, isOpen]);
 
     const handleSend = async () => {
-        if (!input.trim()) return;
+        if (!input.trim() || !socket) return;
 
         const tempId = Date.now().toString();
         const userMsg = { id: tempId, role: 'user', content: input };
+
+        // Optimistic update
         setMessages(prev => [...prev, userMsg]);
         setInput("");
         setIsLoading(true);
 
-        try {
-            // Save user message
-            await fetch('/api/messages', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: userMsg.content, role: 'user' })
-            });
+        // Emit to server
+        socket.emit("send-message", {
+            roomId: "general",
+            message: userMsg.content,
+            role: "user",
+            id: tempId
+        });
 
-            // Simulate AI response (since we don't have a real AI backend connected yet)
-            setTimeout(async () => {
-                const aiContent = "That's interesting! I've saved this to your profile. How else can I help?";
-                await fetch('/api/messages', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: aiContent, role: 'assistant' })
-                });
-                setIsLoading(false);
-            }, 1000);
+        // Simulate AI response via socket (server should handle this in real app)
+        // For demo, we'll just let the server broadcast back. 
+        // If server doesn't have AI logic yet, we can simulate it client-side 
+        // but that defeats the purpose of socket. 
+        // Let's assume the server simply broadcasts what we sent for now (echo),
+        // or we can keep the timeout simulation but emit it via socket.
 
-        } catch (error) {
-            console.error("Failed to send", error);
+        setTimeout(() => {
+            const aiId = (Date.now() + 1).toString();
+            const aiContent = "I'm a socket-powered AI! (Simulated)";
+            setMessages(prev => [...prev, { id: aiId, role: 'assistant', content: aiContent }]);
             setIsLoading(false);
-        }
+        }, 1000);
     };
 
     return (
@@ -107,8 +122,8 @@ export function AIChatWidget() {
                                 {messages.map((m) => (
                                     <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${m.role === 'user'
-                                                ? 'bg-primary text-primary-foreground rounded-br-none'
-                                                : 'bg-background border shadow-sm rounded-bl-none'
+                                            ? 'bg-primary text-primary-foreground rounded-br-none'
+                                            : 'bg-background border shadow-sm rounded-bl-none'
                                             }`}>
                                             {m.content}
                                         </div>

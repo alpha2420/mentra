@@ -13,20 +13,28 @@ datasource db {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  password  String
+  password  String?
   name      String?
-  role      String   @default("user") // "user" or "mentor"
+  role      String   @default("user")
   createdAt DateTime @default(now())
-  messages  Message[]
 }
 
 model Message {
   id        String   @id @default(uuid())
   content   String
   createdAt DateTime @default(now())
+  userId    String?
+  role      String
+  roomId    String
+}
+
+model Meeting {
+  id        String   @id @default(uuid())
+  date      DateTime
+  time      String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  role      String   // "user" or "assistant" (for AI) or "mentor"
+  mentorId  String
+  createdAt DateTime @default(now())
 }
 
 model Room {

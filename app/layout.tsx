@@ -4,7 +4,8 @@ import "./globals.css";
 import { Navbar } from "@/components/shared/Navbar";
 import { Footer } from "@/components/shared/Footer";
 import { AIChatWidget } from "@/components/shared/AIChatWidget";
-import { AuthProvider } from "@/components/providers/AuthProvider";
+import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { SocketProvider } from "@/components/providers/SocketProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,17 +20,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased min-h-screen flex flex-col`}>
-        <AuthProvider>
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <AIChatWidget />
-        </AuthProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${inter.className} antialiased min-h-screen flex flex-col`}>
+          <SocketProvider>
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <AIChatWidget />
+          </SocketProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

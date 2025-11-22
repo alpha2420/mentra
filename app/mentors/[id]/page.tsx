@@ -83,23 +83,16 @@ export default function MentorProfile({ params }: { params: { id: string } }) {
                     <div className="p-6 rounded-2xl border bg-card shadow-sm sticky top-24">
                         <h3 className="font-semibold text-lg mb-4">Book a Session</h3>
                         <div className="space-y-4 mb-6">
-                            <div className="flex justify-between items-center p-3 rounded-lg border bg-background">
-                                <div className="flex items-center gap-3">
-                                    <Clock className="w-5 h-5 text-muted-foreground" />
-                                    <span className="font-medium">30 Min Intro</span>
-                                </div>
-                                <span className="font-bold">$50</span>
-                            </div>
                             <div className="flex justify-between items-center p-3 rounded-lg border border-primary bg-primary/5">
                                 <div className="flex items-center gap-3">
                                     <Clock className="w-5 h-5 text-primary" />
-                                    <span className="font-medium">60 Min Session</span>
+                                    <span className="font-medium">Session</span>
                                 </div>
-                                <span className="font-bold">$90</span>
+                                <span className="font-bold">₹1</span>
                             </div>
                         </div>
                         <Button size="lg" className="w-full text-base h-12" asChild>
-                            <Link href={`/room/${mentor.id}-session`}>Start Video Session</Link>
+                            <Link href={`/messages/${mentor.id}`}>Start Session</Link>
                         </Button>
                         <p className="text-xs text-center text-muted-foreground mt-4">
                             Free cancellation up to 24h before.

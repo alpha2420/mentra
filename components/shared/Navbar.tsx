@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SignInButton, SignUpButton, UserButton, SignedOut, SignedIn } from "@clerk/nextjs";
 
 export function Navbar() {
     return (
@@ -25,12 +26,19 @@ export function Navbar() {
                 </nav>
 
                 <div className="flex items-center gap-4">
-                    <Link href="/auth/login" className="hidden md:block text-sm font-medium hover:underline">
-                        Login
-                    </Link>
-                    <Button asChild>
-                        <Link href="/auth/register">Get Started</Link>
-                    </Button>
+                    <SignedOut>
+                        <SignInButton mode="modal">
+                            <Button variant="ghost" className="text-sm font-medium">
+                                Login
+                            </Button>
+                        </SignInButton>
+                        <SignUpButton mode="modal">
+                            <Button>Get Started</Button>
+                        </SignUpButton>
+                    </SignedOut>
+                    <SignedIn>
+                        <UserButton afterSignOutUrl="/" />
+                    </SignedIn>
                 </div>
             </div>
         </header>
