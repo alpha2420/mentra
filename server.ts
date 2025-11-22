@@ -14,11 +14,33 @@ app.prepare().then(() => {
     const httpServer = createServer(async (req, res) => {
         try {
             const parsedUrl = parse(req.url!, true);
+            // Let Socket.IO handle its own requests
+            if (parsedUrl.pathname?.startsWith('/socket.io/')) {
+                return;
+            }
             await handle(req, res, parsedUrl);
         } catch (err) {
             console.error("Error occurred handling", req.url, err);
             res.statusCode = 500;
             res.end("internal server error");
+        }
+    });
+
+    // Fix for "Cannot read properties of undefined (reading 'bind')"
+    httpServer.on('upgrade', async (req, socket, head) => {
+        const parsedUrl = parse(req.url!, true);
+        // Only let Next.js handle upgrades if it's NOT a socket.io request
+        if (parsedUrl.pathname !== '/socket.io/') {
+            try {
+                // @ts-ignore: Next.js upgrade handler signature might vary
+                if (app.getUpgradeHandler) {
+                    // @ts-ignore
+                    await app.getUpgradeHandler()(req, socket, head);
+                }
+            } catch (err) {
+                console.error("Error handling Next.js upgrade:", err);
+                // Don't crash the server
+            }
         }
     });
 
