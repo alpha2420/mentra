@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "ts-node --compiler-options '{\"module\":\"commonjs\"}' server.ts",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production ts-node --compiler-options '{\"module\":\"commonjs\"}' server.ts",
     "lint": "eslint"
   },
   "dependencies": {
