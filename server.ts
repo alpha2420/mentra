@@ -27,6 +27,7 @@ app.prepare().then(() => {
     });
 
     // Fix for "Cannot read properties of undefined (reading 'bind')"
+    // Note: This is a known issue with Next.js custom servers and HMR
     httpServer.on('upgrade', async (req, socket, head) => {
         const parsedUrl = parse(req.url!, true);
         // Only let Next.js handle upgrades if it's NOT a socket.io request
@@ -38,8 +39,10 @@ app.prepare().then(() => {
                     await app.getUpgradeHandler()(req, socket, head);
                 }
             } catch (err) {
-                console.error("Error handling Next.js upgrade:", err);
-                // Don't crash the server
+                // Suppress error in production as it doesn't affect functionality
+                if (dev) {
+                    console.error("Next.js upgrade handler error (non-critical):", err);
+                }
             }
         }
     });
