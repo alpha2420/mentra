@@ -1,4 +1,4 @@
-# Mentra - AI-Powered Mentorship Platform
+# Mentra - Mentorship Platform
 
 > **Real Mentors. Real Wisdom. Real Growth.**
 
@@ -175,8 +175,3 @@ For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 ## 📄 License
 
 MIT
-
-## 🙏 Acknowledgments
-
-- UI/UX inspiration from [Intervue.io](https://intervue.io)
-- Built with [Next.js](https://nextjs.org), [shadcn/ui](https://ui.shadcn.com), and [Framer Motion](https://www.framer.com/motion)
